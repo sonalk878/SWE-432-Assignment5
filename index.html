@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+    <title>Logical Predicates</title>
+</head>
+<body>
+    <h1><center>Predicate Logic Calculator</center></h1>
+    <h2><center>Sonal Kumar * Angela Gentile * George Terziysky * SWE-432-001</center>  </h2>
+    <h3><center>Formatting/Syntax Instructions:</center></h3>
+    <h4><center>In order to calculate the final value of the logical operation, type in the predicate with the following constraints:</center></h4>
+
+    <ul>
+        <li>The entry should be typed in the format of (TRUE/FALSE)(LOGICAL OPERATOR)(TRUE/FALSE)</li>
+        <li>
+            The entry can also be an extention of the format described above. There can be multiple True/False statements with logical operations in between them. For example, you can enter
+            "TRUE OR FALSE",which would give you TRUE, and you could also enter "FALSE AND(FALSE AND TRUE)", which would result in False.
+        </li>
+    </ul>
+    <h4><center>Options for supported logical symbols:</center></h4>
+    <ul>
+        <li>Supported symbols for AND: "&&", "AND", "&", "^"</li>
+        <li>Supported symbols for OR: "||", "|", OR, "V" </li>
+        <li>Supported symbols for NOT: "~", "NOT", "!"</li>
+        <li>Supported symbols for EQUAL: "==", "=", "EQUAL"</li>
+    </ul>
+    <br />
+    <br />
+    <br />
+
+    <form method="post" action="https://cs.gmu.edu:8443/offutt/servlet/formHandler">
+        <center>
+            <label for="logicalOperation">Enter Logical Operation:</label>
+            <input type="text" id="logicalOperation" name="logicalOperation"><br><br>
+            <input type="submit" value="Submit" style="background-color: #80ced6">
+        </center>
+    </form>
+</body>
+</html>
