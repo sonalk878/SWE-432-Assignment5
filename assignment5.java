@@ -34,6 +34,10 @@ public class assignment5 extends HttpServlet{
 	public void doPost (HttpServletRequest request, HttpServletResponse response)
 	   throws ServletException, IOException
 	{
+		//Parse it into a structure that separates boolean variables and logical operators
+		//Echo the predicate to the user
+		//Print a complete truth table for the predicate, including a column with the result for each row
+		
 		// change these variables
 		Float rslt = (float) 0.0;
 		Float lhsVal;
