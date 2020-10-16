@@ -34,9 +34,20 @@ public class assignment5 extends HttpServlet{
 	public void doPost (HttpServletRequest request, HttpServletResponse response)
 	   throws ServletException, IOException
 	{
+		//get vars
+		//String logicalOperation = request.getParameter(Data.logicalOperation.name());
+	
 		//Parse it into a structure that separates boolean variables and logical operators
+		// var array = logicalOperation.split(" ") //split by space "A & B -> [A,&,B]"
+		// var opIndex = array.indexOf("&") //get index of operators
+		//get & into its own array
+		// opIndex > -1 ? array.splice(myIndex, 1) : false //removes & from array
+		
 		//Echo the predicate to the user
+		//print the predicate they enetered
+		
 		//Print a complete truth table for the predicate, including a column with the result for each row
+		//for loop for table size look online
 		
 		// change these variables
 		Float rslt = (float) 0.0;
