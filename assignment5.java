@@ -15,8 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.annotation.WebServlet;
 @WebServlet( name = "assignment5", urlPatterns = {"/assignment5"} )
 
+
 public class assignment5 extends HttpServlet{
-	static enum Data {LOGICALOPERATION};
+	static enum Data {LOGICALOPERATION, DISPLAY};
 	
 	// Location of servlet.
 	static String Domain  = "";
@@ -45,6 +46,8 @@ public class assignment5 extends HttpServlet{
 		
 		//get vars
 		String logicalOperation = request.getParameter(Data.LOGICALOPERATION.name()); //"A & B"
+		String displaySelection = request.getParameter(Data.DISPLAY.name()); //"TRUE/FALSE"
+		//ArrayList<String> displayOptions = new ArrayList(Arrays.asList(displaySelection.split("/"))); //split by /
 		
 		//Parse it into a structure that separates boolean variables and logical operators
 		 ArrayList legalOps = new ArrayList(Arrays.asList("&&", "AND", "&","*", "^", "+", "||", "|", "OR", "V", "~", "NOT", "!", "==", "=", "EQUAL"));
@@ -92,14 +95,19 @@ public class assignment5 extends HttpServlet{
 		//remove nulls from arrayEq
 		arrayEq.removeAll(Collections.singleton(null)); //now we have two array lists {A, B} and {&}
 		
-		//print the predicate they enetered
+		//print the predicate they entered
 		//Print a complete truth table for the predicate, including a column with the result for each row
 		//for loop for table size look online
 		
 		// Change Display Feature
+		String t = "1"; // Default setting
+		String f = "0";
 	    String[][] temp = Table;
-		String t = "TRUE";
-		String f = "FALSE";
+	    //if (displayOptions.size() > 0) {
+	    //	t = displayOptions.get(0);
+	    //	f = displayOptions.get(1);
+	    //}
+
 		changeDisplay(t, f, temp);
 		
 		//Echo the predicate to the user
@@ -112,6 +120,7 @@ public class assignment5 extends HttpServlet{
 			.append("	<center>You typed: " + logicalOperation + "</center>")
 			.append("</html>");
 		
+		// Print Table
 		if (makeTable) {
 			for (int i = 0; i < Table.length; i++) {
 				writer.append("<center>");
@@ -126,8 +135,6 @@ public class assignment5 extends HttpServlet{
 		else{
 			writer.append("<center> INVALID EQUATION!!! </center>");
 		}	
-		// print the table
-		//printTable(temp);
 	  }
 
 	/**
@@ -331,6 +338,17 @@ public class assignment5 extends HttpServlet{
 		out.println("    </ul>");
 		out.println("    <br />    <br />    <br />");
 		out.println("");
+		out.println("    <form method=\"display\" action=\"\\assignment5\">");
+		out.println("        <center>");
+		out.println("			<select name=“DISPLAY“>");
+		out.println("		  	<option value=“1/0” selected=“selected”>1/0</option>");
+		out.println("			<option value=“T/F”>T/F</option>");
+		out.println("			<option value=“t/f”>t/f</option>");
+		out.println("			<option value=“X/O”>X/O</option>");
+		out.println("			<option value=“TRUE/FALSE”>TRUE/FALSE</option>");
+		out.println("		</select>");
+		out.println("		</center>");
+		out.println("	 </form>");
 		out.println("    <form method=\"post\" action=\"\\assignment5\">");
 		out.println("        <center>");
 		out.println("            <label for=\"logicalOperation\">Enter Logical Operation:</label>");
@@ -339,7 +357,6 @@ public class assignment5 extends HttpServlet{
 		out.println("        </center>");
 		out.println("    </form>");
 		out.println("</body>");
-		out.println("");
 		out.println("");
 		
 	}
@@ -390,6 +407,17 @@ public class assignment5 extends HttpServlet{
 		out.println("    </ul>");
 		out.println("    <br />    <br />    <br />");
 		out.println("");
+		out.println("    <form method=\"display\" action=\"\\assignment5\">");
+		out.println("        <center>");
+		out.println("			<select name=“DISPLAY“>");
+		out.println("		  	<option value=“1/0” selected=“selected”>1/0</option>");
+		out.println("			<option value=“T/F”>T/F</option>");
+		out.println("			<option value=“t/f”>t/f</option>");
+		out.println("			<option value=“X/O”>X/O</option>");
+		out.println("			<option value=“TRUE/FALSE”>TRUE/FALSE</option>");
+		out.println("		</select>");
+		out.println("		</center>");
+		out.println("	 </form>");
 		out.println("    <form method=\"post\" action=\"\\assignment5\">");
 		out.println("        <center>");
 		out.println("            <label for=\"logicalOperation\">Enter Logical Operation:</label>");
