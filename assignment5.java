@@ -17,7 +17,7 @@ import javax.servlet.annotation.WebServlet;
 
 
 public class assignment5 extends HttpServlet{
-	static enum Data {LOGICALOPERATION, DISPLAY};
+	static enum Data {LOGICALOPERATION,DISPLAY};
 	
 	// Location of servlet.
 	static String Domain  = "";
@@ -46,9 +46,11 @@ public class assignment5 extends HttpServlet{
 		
 		//get vars
 		String logicalOperation = request.getParameter(Data.LOGICALOPERATION.name()); //"A & B"
-		String displaySelection = request.getParameter(Data.DISPLAY.name()); //"TRUE/FALSE"
-		//ArrayList<String> displayOptions = new ArrayList(Arrays.asList(displaySelection.split("/"))); //split by /
-		
+		String displaySelection = request.getParameter("display"); //"TRUE/FALSE"
+		ArrayList displayOptions = new ArrayList();
+		if (displaySelection != null ) {
+			displayOptions = new ArrayList(Arrays.asList(displaySelection.split("/"))); //split by /
+		}
 		//Parse it into a structure that separates boolean variables and logical operators
 		 ArrayList legalOps = new ArrayList(Arrays.asList("&&", "AND", "&","*", "^", "+", "||", "|", "OR", "V", "~", "NOT", "!", "==", "=", "EQUAL"));
 	     ArrayList arrayEq = new ArrayList(Arrays.asList(logicalOperation.split(" "))); //split by space "A & B -> [A,&,B]"
@@ -103,10 +105,10 @@ public class assignment5 extends HttpServlet{
 		String t = "1"; // Default setting
 		String f = "0";
 	    String[][] temp = Table;
-	    //if (displayOptions.size() > 0) {
-	    //	t = displayOptions.get(0);
-	    //	f = displayOptions.get(1);
-	    //}
+	    if (displayOptions.size() > 0) {
+	    	t = (String)displayOptions.get(0);
+	    	f = (String)displayOptions.get(1);
+	    }
 
 		changeDisplay(t, f, temp);
 		
@@ -117,25 +119,29 @@ public class assignment5 extends HttpServlet{
  		PrintResponseBody(writer);
 		writer.append("<!DOCTYPE html>")
 			.append("<html>")
+			.append("	<center>Display selected: " + displaySelection + "</center>")
 			.append("	<center>You typed: " + logicalOperation + "</center>")
 			.append("</html>");
 		
 		// Print Table
 		if (makeTable) {
-			for (int i = 0; i < Table.length; i++) {
-				writer.append("<center>");
+			writer.append("<center>");
+			writer.append("<table border=2 cellpadding=0 cellspacing=0>");
+			for (int i = 0; i < Table.length; i++) {	
+				writer.append("<tr>");
 				for (int j = 0; j < Table[i].length; j++) {
-					writer.append(Table[i][j] + "|");
-					//System.out.print();
+					writer.append("<td>" + Table[i][j] + "</td>");
 				}
-				writer.append("</center>");
-				//System.out.println();
+				writer.append("</tr>");
 			}
+			writer.append("</table> </center>");
 		}
 		else{
 			writer.append("<center> INVALID EQUATION!!! </center>");
 		}	
 	  }
+	
+
 
 	/**
 	 * The method that constructs the truth table
@@ -338,24 +344,24 @@ public class assignment5 extends HttpServlet{
 		out.println("    </ul>");
 		out.println("    <br />    <br />    <br />");
 		out.println("");
-		out.println("    <form method=\"display\" action=\"\\assignment5\">");
+		out.println("    <form method=\"post\" action=\"\\assignment5\">");
 		out.println("        <center>");
-		out.println("			<select name=“DISPLAY“>");
-		out.println("		  	<option value=“1/0” selected=“selected”>1/0</option>");
-		out.println("			<option value=“T/F”>T/F</option>");
-		out.println("			<option value=“t/f”>t/f</option>");
-		out.println("			<option value=“X/O”>X/O</option>");
-		out.println("			<option value=“TRUE/FALSE”>TRUE/FALSE</option>");
+		out.println("			<select name=\"display\">");
+		out.println("		  	<option value=\"1/0\" selected=“selected”>1/0</option>");
+		out.println("			<option value=\"T/F\">T/F</option>");
+		out.println("			<option value=\"t/f\">t/f</option>");
+		out.println("			<option value=\"X/O\">X/O</option>");
+		out.println("			<option value=\"TRUE/FALSE\">TRUE/FALSE</option>");
 		out.println("		</select>");
 		out.println("		</center>");
-		out.println("	 </form>");
-		out.println("    <form method=\"post\" action=\"\\assignment5\">");
+		out.println("    <br />");
 		out.println("        <center>");
 		out.println("            <label for=\"logicalOperation\">Enter Logical Operation:</label>");
 		out.println("            <input type=\"text\" id=\"logicalOperation\" name=\"LOGICALOPERATION\"><br><br>");
 		out.println("            <input type=\"submit\" value=\"Submit\" style=\"background-color: #80ced6\">");
 		out.println("        </center>");
 		out.println("    </form>");
+		out.println("<p><center>Collaboration Summary: All group members worked on different parts of the assignment and brought the pieces together in the end. Sonal worked on fixing up the previous html page used for assignment 3 and recreated the page to fulfill the requirements for the assignment. Angela worked on grabbing the input passed through from the user and using the doGet and doPost methods to manipulate the outcome. George calculated the outcome of the input text and created a table to visualize the results. George also made sure to include error checking to ensure that the user was only entering values that could be evaluated using logical predicates, and then dynamically implemented the truth table. </center></p>");
 		out.println("</body>");
 		out.println("");
 		
@@ -407,24 +413,24 @@ public class assignment5 extends HttpServlet{
 		out.println("    </ul>");
 		out.println("    <br />    <br />    <br />");
 		out.println("");
-		out.println("    <form method=\"display\" action=\"\\assignment5\">");
+		out.println("    <form method=\"post\" action=\"\\assignment5\">");
 		out.println("        <center>");
-		out.println("			<select name=“DISPLAY“>");
-		out.println("		  	<option value=“1/0” selected=“selected”>1/0</option>");
-		out.println("			<option value=“T/F”>T/F</option>");
-		out.println("			<option value=“t/f”>t/f</option>");
-		out.println("			<option value=“X/O”>X/O</option>");
-		out.println("			<option value=“TRUE/FALSE”>TRUE/FALSE</option>");
+		out.println("			<select name=\"display\">");
+		out.println("		  	<option value=\"1/0\" selected=“selected”>1/0</option>");
+		out.println("			<option value=\"T/F\">T/F</option>");
+		out.println("			<option value=\"t/f\">t/f</option>");
+		out.println("			<option value=\"X/O\">X/O</option>");
+		out.println("			<option value=\"TRUE/FALSE\">TRUE/FALSE</option>");
 		out.println("		</select>");
 		out.println("		</center>");
-		out.println("	 </form>");
-		out.println("    <form method=\"post\" action=\"\\assignment5\">");
+		out.println("    <br />");
 		out.println("        <center>");
 		out.println("            <label for=\"logicalOperation\">Enter Logical Operation:</label>");
 		out.println("            <input type=\"text\" id=\"logicalOperation\" name=\"LOGICALOPERATION\"><br><br>");
 		out.println("            <input type=\"submit\" value=\"Submit\" style=\"background-color: #80ced6\">");
 		out.println("        </center>");
 		out.println("    </form>");
+		out.println("<p><center>Collaboration Summary: All group members worked on different parts of the assignment and brought the pieces together in the end. Sonal worked on fixing up the previous html page used for assignment 3 and recreated the page to fulfill the requirements for the assignment. Angela worked on grabbing the input passed through from the user and using the doGet and doPost methods to manipulate the outcome. George calculated the outcome of the input text and created a table to visualize the results. George also made sure to include error checking to ensure that the user was only entering values that could be evaluated using logical predicates, and then dynamically implemented the truth table. </center></p>");
 		
 	}
 	
