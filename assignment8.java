@@ -37,15 +37,14 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 
-
 // adds servlet mapping annotation
 import javax.servlet.annotation.WebServlet;
 @WebServlet( name = "assignment8", urlPatterns = {"/assignment8"} )
 public class assignment8 extends HttpServlet{
 	static String Style ="https://www.cs.gmu.edu/~gterziys/public_html/style.css";
-	static enum Data {LOGICALOPERATION, TABLE, ENTRY, ENTRIES};
+	static enum Data {LOGICALOPERATION, ENTRY, ENTRIES};
 	
-	static String RESOURCE_FILE = "entries.xml";
+	static String RESOURCE_FILE = "predicates.xml";
 	
 	// Location of servlet.
 	static String Domain  = "";
@@ -58,7 +57,6 @@ public class assignment8 extends HttpServlet{
 	
 	public class Entry {
 	    String predicate;
-	    String Table;
 	  }
 	
 	List<Entry> entries;
@@ -91,12 +89,11 @@ public class assignment8 extends HttpServlet{
         this.filePath = filePath;
       }
       
-      public List<Entry> save(String predicate, String Table)
+      public List<Entry> save(String predicate)
 	      throws FileNotFoundException, XMLStreamException{
 	      List<Entry> entries = getAll();
 	      Entry newEntry = new Entry();
 	      newEntry.predicate = predicate;
-	      newEntry.Table = Table;
 	      entries.add(newEntry);
 
 	      XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
@@ -110,7 +107,7 @@ public class assignment8 extends HttpServlet{
 	      eventWriter.add(LINE_END);
 
 	      for(Entry entry: entries){
-	        addEntry(eventWriter, entry.predicate, entry.Table);
+	        addEntry(eventWriter, entry.predicate);
 	      }
 
 	      eventWriter.add(ENTRIES_END);
@@ -121,30 +118,28 @@ public class assignment8 extends HttpServlet{
 	      return entries;
 	    }
   		
-      private void addEntry(XMLEventWriter eventWriter, String predicate,
-    		  String Table) throws XMLStreamException {
+      private void addEntry(XMLEventWriter eventWriter, String predicate) throws XMLStreamException {
           eventWriter.add(ENTRY_START);
           eventWriter.add(LINE_END);
           createNode(eventWriter, Data.LOGICALOPERATION.name(), predicate);
-          createNode(eventWriter, Data.TABLE.name(), Table);
           eventWriter.add(ENTRY_END);
           eventWriter.add(LINE_END);
 
       }
 
-      private void createNode(XMLEventWriter eventWriter, String predicate,
-            String table) throws XMLStreamException {
-        StartElement sElement = eventFactory.createStartElement("", "", predicate);
-        eventWriter.add(LINE_TAB);
-        eventWriter.add(sElement);
+      private void createNode(XMLEventWriter eventWriter, String name,
+              String value) throws XMLStreamException {
+          StartElement sElement = eventFactory.createStartElement("", "", name);
+          eventWriter.add(LINE_TAB);
+          eventWriter.add(sElement);
 
-        Characters characters = eventFactory.createCharacters(table);
-        eventWriter.add(characters);
+          Characters characters = eventFactory.createCharacters(value);
+          eventWriter.add(characters);
 
-        EndElement eElement = eventFactory.createEndElement("", "", predicate);
-        eventWriter.add(eElement);
-        eventWriter.add(LINE_END);
-      }
+          EndElement eElement = eventFactory.createEndElement("", "", name);
+          eventWriter.add(eElement);
+          eventWriter.add(LINE_END);
+        }
 
       private List<Entry> getAll(){
         List entries = new ArrayList();
@@ -162,7 +157,6 @@ public class assignment8 extends HttpServlet{
 
           Entry entry = null;
           while (eventReader.hasNext()) {
-            // <ENTRIES> not needed for the example
             XMLEvent event = eventReader.nextEvent();
 
             if (event.isStartElement()) {
@@ -180,14 +174,7 @@ public class assignment8 extends HttpServlet{
                         continue;
                     }
                 }
-                if (event.asStartElement().getName().getLocalPart()
-                        .equals(Data.TABLE.name())) {
-                    event = eventReader.nextEvent();
-                    entry.Table =event.asCharacters().getData();
-                    continue;
-                }
             }
-
             if (event.isEndElement()) {
                 EndElement endElement = event.asEndElement();
                 if (endElement.getName().getLocalPart()
@@ -195,9 +182,7 @@ public class assignment8 extends HttpServlet{
                     entries.add(entry);
                 }
             }
-
           }
-
         }catch (FileNotFoundException e) {
           e.printStackTrace();
         }catch (XMLStreamException e) {
@@ -211,12 +196,12 @@ public class assignment8 extends HttpServlet{
 
     public String getAllAsHTMLTable(List<Entry> entries){
       StringBuilder htmlOut = new StringBuilder("<table>");
-      htmlOut.append("<tr><th>Predicate</th><th>Table</th></tr>");
+      htmlOut.append("<tr><th>Predicates</th></tr>");
       if(entries == null || entries.size() == 0){
         htmlOut.append("<tr><td>No entries yet.</td></tr>");
       }else{
         for(Entry entry: entries){
-           htmlOut.append("<tr><td>"+entry.predicate +"</td><td>"+entry.Table+"</td></tr>");
+           htmlOut.append("<tr><td>"+entry.predicate +"</td></tr>");
         }
       }
       htmlOut.append("</table>");
@@ -281,7 +266,10 @@ public class assignment8 extends HttpServlet{
 	    	 Table = TruthTable(variableArray, equationArray);
 	    	 // check if Final input has error
 	    	 if (Table[Table.length - 1][Table[Table.length-1].length - 1] == "E") {
-	    		 makeTable = false;makeTable = false;
+	    		 makeTable = false;
+	    	 }
+	    	 if (logicalOperation.length() <= 1 || logicalOperation == null) {
+	    		 makeTable = false;
 	    	 }
 	     }
 	
@@ -297,68 +285,66 @@ public class assignment8 extends HttpServlet{
 	    	t = (String)displayOptions.get(0);
 	    	f = (String)displayOptions.get(1);
 	    }
-
-		changeDisplay(t, f, temp);
-		
+		String operation = request.getParameter("Operation");
+		if (operation == null){operation = "";}
 		//Echo the predicate to the user
 		response.setContentType("text/html");
 		PrintWriter writer = response.getWriter();
-		PrintHead(writer);
- 		PrintResponseBody(writer);
-		writer.append("<!DOCTYPE html>")
-			.append("<html>")
-			.append("	<center>Display selected: " + displaySelection + "</center>")
-			.append("	<center>You typed: " + logicalOperation + "</center>")
-			.append("</html>");
-		
-		// Print Table
-		if (makeTable) {
-			writer.append("<center>");
-			writer.append("<table border=2 cellpadding=0 cellspacing=0>");
-			for (int i = 0; i < Table.length; i++) {	
-				writer.append("<tr>");
-				for (int j = 0; j < Table[i].length; j++) {
-					writer.append("<td>" + Table[i][j] + "</td>");
-				}
-				writer.append("</tr>");
-			}
-			writer.append("</table> </center>");
-		}
-		else{
-			writer.append("<center> INVALID EQUATION!!! </center>");
-		}	
-		
-		String sTable = printTable(Table);
-		
-		EntryManager entryManager = new EntryManager();
-	       entryManager.setFilePath(RESOURCE_FILE);
-	       List<Entry> newEntries= null;
-	       try{
-	         newEntries=entryManager.save(logicalOperation, sTable);
-	       }catch(FileNotFoundException e){
-	         e.printStackTrace();
-	         //error+= "<li>Could not save entry.</li>";
-	       }
-	       catch(XMLStreamException e){
-	         e.printStackTrace();
-	          //error+= "<li>Could not save entry.</li>";
-	       }
-
-
-	       PrintHead(writer);
-	       if(newEntries ==  null){
-	        // error+= "<li>Could not save entry.</li>";
+ 		if (operation.equals(OperationXMLfile))
+		{
+ 			EntryManager entryManager = new EntryManager();
+	        entryManager.setFilePath(RESOURCE_FILE);
+ 			List<Entry> entries = entryManager.getAll();
+	        PrintHead(writer);
+	        if(entries ==  null){
+	         // error+= "<li>Could not save entry.</li>";
 	         //printBody(writer, name, rawAge, error);
-	       }else{
-	         printResponseBody(writer, entryManager.getAllAsHTMLTable(newEntries));
-	       }
-
-	       PrintTail(writer);
-		
-	  }
-	
-
-
+	        }else{
+	          printXMLBody(writer, entryManager.getAllAsHTMLTable(entries));
+	          PrintTail(writer);
+	        }
+		}
+ 		else {
+ 			PrintHead(writer);
+ 	 		PrintResponseBody(writer);
+			writer.append("<!DOCTYPE html>")
+				.append("<html>")
+				.append("	<center>Display selected: " + displaySelection + "</center>")
+				.append("	<center>You typed: " + logicalOperation + "</center>")
+				.append("</html>");
+			
+			// Print Table
+			if (makeTable) {
+				changeDisplay(t, f, temp);
+				writer.append("<center>");
+				writer.append("<table border=2 cellpadding=0 cellspacing=0>");
+				for (int i = 0; i < Table.length; i++) {	
+					writer.append("<tr>");
+					for (int j = 0; j < Table[i].length; j++) {
+						writer.append("<td>" + Table[i][j] + "</td>");
+					}
+					writer.append("</tr>");
+				}
+				writer.append("</table> </center>");
+			    EntryManager entryManager = new EntryManager();
+		        entryManager.setFilePath(RESOURCE_FILE);
+		        List<Entry> newEntries= null;
+		        try{
+		          newEntries=entryManager.save(logicalOperation);
+		        }catch(FileNotFoundException e){
+		          e.printStackTrace();
+		          //error+= "<li>Could not save entry.</li>";
+		        }
+		        catch(XMLStreamException e){
+		          e.printStackTrace();
+		          //error+= "<li>Could not save entry.</li>";
+		       }
+			}
+			else{
+				writer.append("<center> INVALID EQUATION!!! </center>");
+			}
+ 		}
+	}
 	/**
 	 * The method that constructs the truth table
 	 * It goes through every possible binary combination for the variables, and calls parseEquation()
@@ -530,7 +516,7 @@ public class assignment8 extends HttpServlet{
 	   // Put the focus in the predicate field
 	   out.println ("<script>");
 	   out.println ("  function setFocus(){");
-	   out.println ("    document.persist2file.LOGICALOPERATION.focus();");
+	   out.println ("    document.persist2file.NAME.focus();");
 	   out.println ("  }");
 	   out.println ("</script>");
 	   out.println("</head>");
@@ -567,7 +553,7 @@ public class assignment8 extends HttpServlet{
 		out.println("    </ul>");
 		out.println("    <br />    <br />    <br />");
 		out.println("");
-		out.println("    <form method=\"post\" action=\"\\assignment8\">");
+		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment8\">");
 		out.println("        <center>");
 		out.println("			<select name=\"display\">");
 		out.println("		  	<option value=\"1/0\">1/0</option>");
@@ -609,20 +595,37 @@ public class assignment8 extends HttpServlet{
 	   out.println("</html>");
 	} // End PrintTail
 	
-	private void printResponseBody (PrintWriter out, String tableString){
+	private void printXMLBody (PrintWriter out, String tableString){
 	    out.println("<body>");
 	    out.println("<p>");
-	    out.println("On the left are previous predicates entered, and to the right are their tables");
-	    out.println("</p>");
-	    out.println("");
+	    out.println("On the left are previous predicates entered. You may enter one on the bottom");
 	    out.println(tableString);
+	    out.println("");
+	    out.println("</p>");
+		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment8\">");
+		out.println("        <center>");
+		out.println("			<select name=\"display\">");
+		out.println("		  	<option value=\"1/0\">1/0</option>");
+		out.println("			<option value=\"T/F\">T/F</option>");
+		out.println("			<option value=\"t/f\">t/f</option>");
+		out.println("			<option value=\"X/O\">X/O</option>");
+		out.println("			<option value=\"TRUE/FALSE\">TRUE/FALSE</option>");
+		out.println("		</select>");
+		out.println("		</center>");
+		out.println("    <br />");
+		out.println("        <center>");
+		out.println("            <label for=\"logicalOperation\">Enter Logical Operation:</label>");
+		out.println("            <input type=\"text\" id=\"logicalOperation\" name=\"LOGICALOPERATION\"><br><br>");
+		out.println("            <input type=\"submit\" value=\"Submit\" style=\"background-color: #80ced6\">");
+		out.println("        </center>");
+		out.println("    </form>");
 	    out.println("");
 	    out.println("</body>");
 	  }
 	
 	private void PrintResponseBody (PrintWriter out)
 	{
-		out.println("<body>");
+		out.println("<body onLoad=\"setFocus()\">");
 		out.println("    <h1><center>Predicate Logic Calculator</center></h1>");
 		out.println("    <h2><center>Sonal Kumar * Angela Gentile * George Terziysky * SWE-432-001</center>  </h2>");
 		out.println("	 <h3><center>Formatting/Syntax Instructions:</center></h3>");
@@ -645,7 +648,7 @@ public class assignment8 extends HttpServlet{
 		out.println("    </ul>");
 		out.println("    <br />    <br />    <br />");
 		out.println("");
-		out.println("    <form method=\"post\" action=\"\\assignment8\">");
+		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment8\">");
 		out.println("        <center>");
 		out.println("			<select name=\"display\">");
 		out.println("		  	<option value=\"1/0\">1/0</option>");
