@@ -56,7 +56,7 @@ public class assignment5 extends HttpServlet{
 	     ArrayList arrayEq = new ArrayList(Arrays.asList(logicalOperation.split(" "))); //split by space "A & B -> [A,&,B]"
 	     ArrayList arrayOps = new ArrayList();
 	     
-	     ArrayList<EquationVariables> variableArray = new ArrayList<>();
+	     ArrayList<EquationVars> variableArray = new ArrayList<>();
 	 	 ArrayList<Object> equationArray = new ArrayList<>();
 	 	 String[][] Table = null;
 	 	boolean makeTable = true;
@@ -65,10 +65,10 @@ public class assignment5 extends HttpServlet{
 	     for(int i = 0; i< arrayEq.size(); i++){
 	    	 if(!(legalOps.contains(arrayEq.get(i)))){
 	    		 boolean alreadyExists = false; //Keeps track of duplicate variables
-	    		 EquationVariables temp = new EquationVariables((String)arrayEq.get(i),true);
+	    		 EquationVars temp = new EquationVars((String)arrayEq.get(i),true);
 	    		 
 	    		//checks for duplicate variables and doesn't add them to the array twice
-				for (EquationVariables v : variableArray){
+				for (EquationVars v : variableArray){
 					if (v.getName()==temp.getName()){
 						alreadyExists = true;
 						temp = v;
@@ -92,6 +92,9 @@ public class assignment5 extends HttpServlet{
 	    	 if (Table[Table.length - 1][Table[Table.length-1].length - 1] == "E") {
 	    		 makeTable = false;makeTable = false;
 	    	 }
+	    	 if (logicalOperation.length() <= 1 || logicalOperation == null) {
+	    		 makeTable = false;
+	    	 }
 	     }
 		
 		//remove nulls from arrayEq
@@ -109,9 +112,7 @@ public class assignment5 extends HttpServlet{
 	    	t = (String)displayOptions.get(0);
 	    	f = (String)displayOptions.get(1);
 	    }
-
-		changeDisplay(t, f, temp);
-		
+	    
 		//Echo the predicate to the user
 		response.setContentType("text/html");
 		PrintWriter writer = response.getWriter();
@@ -125,6 +126,7 @@ public class assignment5 extends HttpServlet{
 		
 		// Print Table
 		if (makeTable) {
+			changeDisplay(t, f, temp);
 			writer.append("<center>");
 			writer.append("<table border=2 cellpadding=0 cellspacing=0>");
 			for (int i = 0; i < Table.length; i++) {	
@@ -148,7 +150,7 @@ public class assignment5 extends HttpServlet{
 	 * It goes through every possible binary combination for the variables, and calls parseEquation()
 	 * for each one. If parseEquation returns false, the program stops executing
 	 */
-	private static String[][] TruthTable(ArrayList<EquationVariables> variables, ArrayList<Object> equation) {
+	private static String[][] TruthTable(ArrayList<EquationVars> variables, ArrayList<Object> equation) {
 		int width = variables.size();
 		int length = (int) Math.pow(2, width);
 		String[][] table = new String[length+1][width+2];
@@ -192,8 +194,8 @@ public class assignment5 extends HttpServlet{
 		String result = "E";
 		// change boolean values to ints
 		for (int j = 0; j < temp.size();j++){
-			if (temp.get(j).getClass().equals(EquationVariables.class)){
-				temp.set(j, ((EquationVariables)temp.get(j)).getState() ? 1 : 0);
+			if (temp.get(j).getClass().equals(EquationVars.class)){
+				temp.set(j, ((EquationVars)temp.get(j)).getState() ? 1 : 0);
 			}
 		}
 		for (int i = 0; i < temp.size(); i++){
@@ -444,7 +446,7 @@ public class assignment5 extends HttpServlet{
 
 }
 
-class EquationVariables {
+class EquationVars {
 	
 	private boolean state;
 	private String name;
@@ -452,7 +454,7 @@ class EquationVariables {
 	/**
 	 * Stores variables with a name and a binary state (1 or 0)
 	 */
-	public EquationVariables(String theName, boolean theState){
+	public EquationVars(String theName, boolean theState){
 		name = theName;
 		state = theState;
 	}
