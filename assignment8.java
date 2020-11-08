@@ -298,7 +298,6 @@ public class assignment8 extends HttpServlet{
 	        PrintHead(writer);
 	        if(entries ==  null){
 	         // error+= "<li>Could not save entry.</li>";
-	         //printBody(writer, name, rawAge, error);
 	        }else{
 	          printXMLBody(writer, entryManager.getAllAsHTMLTable(entries));
 	          PrintTail(writer);
@@ -329,7 +328,17 @@ public class assignment8 extends HttpServlet{
 			    EntryManager entryManager = new EntryManager();
 		        entryManager.setFilePath(RESOURCE_FILE);
 		        List<Entry> newEntries= null;
-		        try{
+		        try{	
+		          StringBuilder out = new StringBuilder(logicalOperation.length());
+		          for (int i = 0; i < logicalOperation.length(); i++) {
+		        	  char charAt = logicalOperation.charAt(i);
+		              if (charAt == '&') {
+		            	  out.append("(ampersand)");
+		              } else {
+		                  out.append(charAt);
+		              }
+		          }
+		          logicalOperation = out.toString(); //"&#038;";
 		          newEntries=entryManager.save(logicalOperation);
 		        }catch(FileNotFoundException e){
 		          e.printStackTrace();
@@ -571,7 +580,6 @@ public class assignment8 extends HttpServlet{
 		out.println(" 			 <input type=\"submit\" value=\"" + OperationXMLfile  + "\" name=\"Operation\">");
 		out.println("        </center>");
 		out.println("    </form>");
-		out.println("<p><center>Collaboration Summary: All group members worked on different parts of the assignment and brought the pieces together in the end. Sonal worked on fixing up the previous html page used for assignment 3 and recreated the page to fulfill the requirements for the assignment. Angela worked on grabbing the input passed through from the user and using the doGet and doPost methods to manipulate the outcome. George calculated the outcome of the input text and created a table to visualize the results. George also made sure to include error checking to ensure that the user was only entering values that could be evaluated using logical predicates, and then dynamically implemented the truth table. </center></p>");
 		out.println("</body>");
 		out.println("");
 		
@@ -592,6 +600,7 @@ public class assignment8 extends HttpServlet{
 	private void PrintTail (PrintWriter out)
 	{
 	   out.println("");
+	   out.println("<p><center>Collaboration Summary: All group members worked on different parts of the assignment and brought the pieces together in the end. Sonal & Angela worked on implementing nodes for the XML data into the existing Assignment5 code. George helped parse the data into the nodes and implement the html body. An error we ran into was the ampersand(&) can not be displayed as an XML element unless it is replaced with an entity refereance. </center></p>");
 	   out.println("</html>");
 	} // End PrintTail
 	
@@ -666,8 +675,7 @@ public class assignment8 extends HttpServlet{
 		out.println(" 			 <input type=\"submit\" value=\"" + OperationXMLfile  + "\" name=\"Operation\">");
 		out.println("        </center>");
 		out.println("    </form>");
-		out.println("<p><center>Collaboration Summary: All group members worked on different parts of the assignment and brought the pieces together in the end. Sonal worked on fixing up the previous html page used for assignment 3 and recreated the page to fulfill the requirements for the assignment. Angela worked on grabbing the input passed through from the user and using the doGet and doPost methods to manipulate the outcome. George calculated the outcome of the input text and created a table to visualize the results. George also made sure to include error checking to ensure that the user was only entering values that could be evaluated using logical predicates, and then dynamically implemented the truth table. </center></p>");
-		
+
 	}
 	
 	
