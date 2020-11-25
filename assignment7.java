@@ -39,8 +39,8 @@ import javax.xml.stream.events.XMLEvent;
 
 // adds servlet mapping annotation
 import javax.servlet.annotation.WebServlet;
-@WebServlet( name = "assignment8", urlPatterns = {"/assignment8"} )
-public class assignment8 extends HttpServlet{
+@WebServlet( name = "assignment7", urlPatterns = {"/assignment7"} )
+public class assignment7 extends HttpServlet{
 	static String Style ="https://www.cs.gmu.edu/~gterziys/public_html/style.css";
 	static enum Data {LOGICALOPERATION, ENTRY, ENTRIES};
 	
@@ -49,7 +49,7 @@ public class assignment8 extends HttpServlet{
 	// Location of servlet.
 	static String Domain  = "";
 	static String Path    = "/";
-	static String Servlet = "assignment8";
+	static String Servlet = "assignment7";
 	
 	// Button labels
 	static String OperationSubmit = "Submit";
@@ -562,7 +562,7 @@ public class assignment8 extends HttpServlet{
 		out.println("    </ul>");
 		out.println("    <br />    <br />    <br />");
 		out.println("");
-		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment8\">");
+		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment7\">");
 		out.println("        <center>");
 		out.println("			<select name=\"display\">");
 		out.println("		  	<option value=\"1/0\">1/0</option>");
@@ -611,7 +611,7 @@ public class assignment8 extends HttpServlet{
 	    out.println(tableString);
 	    out.println("");
 	    out.println("</p>");
-		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment8\">");
+		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment7\">");
 		out.println("        <center>");
 		out.println("			<select name=\"display\">");
 		out.println("		  	<option value=\"1/0\">1/0</option>");
@@ -657,7 +657,7 @@ public class assignment8 extends HttpServlet{
 		out.println("    </ul>");
 		out.println("    <br />    <br />    <br />");
 		out.println("");
-		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment8\">");
+		out.println("    <form name=\"persist2file\" method=\"post\" action=\"\\assignment7\">");
 		out.println("        <center>");
 		out.println("			<select name=\"display\">");
 		out.println("		  	<option value=\"1/0\">1/0</option>");
